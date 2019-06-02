@@ -14,13 +14,18 @@
 #define WIDTH 200
 #define HEIGHT 100
 
-vec3 blendedColor(const ray& r, hitable* world)
+vec3 GetRayProducedColor(const ray& r, hitable* world);
+vec3 random_in_unit_sphere();
+float getRundomFloat();
+
+vec3 GetRayProducedColor(const ray& r, hitable* world)
 {
 	hit_record rec;
 
-	if (world->hit(r, 0.0f, FLT_MAX, rec))
+	if (world->hit(r, 0.001f, FLT_MAX, rec))
 	{
-		return 0.5f*vec3(rec.normal.x()+1, rec.normal.y()+1, rec.normal.z()+1);
+		vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+		return 0.5f*GetRayProducedColor(ray(rec.p, target-rec.p), world);
 	}
 	else
 	{
@@ -28,6 +33,23 @@ vec3 blendedColor(const ray& r, hitable* world)
 		float t = 0.5f*(unit_direction.y() + 1.0f);
 		return (1.0f - t)*vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
 	}
+}
+
+vec3 random_in_unit_sphere()
+{
+	vec3 p;
+	do
+	{
+		p = 2.0*vec3(getRundomFloat(),getRundomFloat(),getRundomFloat()) - vec3(1,1,1);
+	} 
+	while (p.squared_length() >= 1.f);
+
+	return p;
+}
+
+float getRundomFloat()
+{
+	return (((double)rand() / (RAND_MAX)));
 }
 
 int main()
@@ -58,14 +80,15 @@ int main()
 
 			for (int s = 0; s < HEIGHT; s++)
 			{
-				float u = float(i + (((double)rand() / (RAND_MAX)) + 1)) / float(WIDTH);
-				float v = float(j + (((double)rand() / (RAND_MAX)) + 1)) / float(HEIGHT);
+				float u = float(i + getRundomFloat()) / float(WIDTH);
+				float v = float(j + getRundomFloat()) / float(HEIGHT);
 				ray r = cam.get_ray(u, v);
 				vec3 p = r.point_at_parameter(2.f);
-				color += blendedColor(r, world);
+				color += GetRayProducedColor(r, world);
 			}
 
 			color /= float(HEIGHT);
+			color = vec3(sqrt(color[0]), sqrt(color[1]), sqrt(color[2]));
 
 			int ir = int(255.99*color[0]);
 			int ig = int(255.99*color[1]);
