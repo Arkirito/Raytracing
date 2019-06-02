@@ -118,7 +118,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\hitable.h" />
+    <ClInclude Include="Headers\hitable_list.h" />
     <ClInclude Include="Headers\ray.h" />
+    <ClInclude Include="Headers\sphere.h" />
     <ClInclude Include="Headers\vec3.h" />
   </ItemGroup>
   <ItemGroup>

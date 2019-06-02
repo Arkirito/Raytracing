@@ -21,6 +21,15 @@
     <ClInclude Include="Headers\ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\hitable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\hitable_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Source.cpp">
