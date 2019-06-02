@@ -1,11 +1,15 @@
 #include <iostream>
 #include <fstream>
 
+#include <random>
+#include <time.h>
+
 #include <vec3.h>
 #include <ray.h>
 #include <hitable.h>
 #include <hitable_list.h>
 #include <sphere.h>
+#include <camera.h>
 
 #define WIDTH 200
 #define HEIGHT 100
@@ -42,15 +46,26 @@ int main()
 	list[1] = new sphere(vec3(0.f, -100.5f, -1.f), 100);
 	hitable *world = new hitable_list(list, 2);
 
+	camera cam;
+
+	srand(time(NULL));
+
 	for(int j = HEIGHT - 1; j >= 0; --j)
 	{
 		for(int i = 0; i <  WIDTH; ++i)
 		{
-			float u = float(i) / float(WIDTH);
-			float v = float(j) / float(HEIGHT);
-			ray r(origin, lower_left_corner + u * horizontal + v * vertical);
+			vec3 color(0, 0, 0);
 
-			vec3 color = blendedColor(r, world);
+			for (int s = 0; s < HEIGHT; s++)
+			{
+				float u = float(i + (((double)rand() / (RAND_MAX)) + 1)) / float(WIDTH);
+				float v = float(j + (((double)rand() / (RAND_MAX)) + 1)) / float(HEIGHT);
+				ray r = cam.get_ray(u, v);
+				vec3 p = r.point_at_parameter(2.f);
+				color += blendedColor(r, world);
+			}
+
+			color /= float(HEIGHT);
 
 			int ir = int(255.99*color[0]);
 			int ig = int(255.99*color[1]);

@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\camera.h" />
     <ClInclude Include="Headers\hitable.h" />
     <ClInclude Include="Headers\hitable_list.h" />
     <ClInclude Include="Headers\ray.h" />

@@ -30,6 +30,9 @@
     <ClInclude Include="Headers\sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Source.cpp">
