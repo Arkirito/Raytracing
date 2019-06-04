@@ -57,7 +57,7 @@ int main()
 	list[0] = new sphere(vec3(0.f, 0.f, -1.f), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
 	list[1] = new sphere(vec3(0.f, -100.5f, -1.f), 100, new lambertian(vec3(0.8, 0.8, 0.3)));
 	list[2] = new sphere(vec3(1.f,  0.f, -1.f), 0.5f, new metal(vec3(0.8, 0.8, 0.3)));
-	list[3] = new sphere(vec3(-1.f, 0.f, -1.f), 0.5f, new metal(vec3(0.8, 0.8, 0.3)));
+	list[3] = new sphere(vec3(-1.f, 0.f, -1.f), 0.5f, new dielectric(1.5f));
 	hitable *world = new hitable_list(list, 4);
 
 	camera cam;
