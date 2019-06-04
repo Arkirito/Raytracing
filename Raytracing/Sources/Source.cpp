@@ -11,8 +11,8 @@
 
 #include <common.h>
 
-#define WIDTH 200
-#define HEIGHT 100
+#define WIDTH 600
+#define HEIGHT 300
 
 vec3 GetRayProducedColor(const ray& r, hitable* world, int depth);
 
@@ -60,7 +60,7 @@ int main()
 	list[3] = new sphere(vec3(-1.f, 0.f, -1.f), 0.5f, new dielectric(1.5f));
 	hitable *world = new hitable_list(list, 4);
 
-	camera cam;
+	camera cam(vec3(-1.5, 1.5, 1), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(WIDTH)/float(HEIGHT));
 
 	srand(time(NULL));
 
