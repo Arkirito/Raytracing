@@ -33,6 +33,12 @@
     <ClInclude Include="Headers\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Source.cpp">

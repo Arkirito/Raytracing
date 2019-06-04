@@ -1,31 +1,38 @@
 #include <iostream>
 #include <fstream>
 
-#include <random>
-#include <time.h>
-
 #include <vec3.h>
 #include <ray.h>
 #include <hitable.h>
 #include <hitable_list.h>
 #include <sphere.h>
 #include <camera.h>
+#include <material.h>
+
+#include <common.h>
 
 #define WIDTH 200
 #define HEIGHT 100
 
-vec3 GetRayProducedColor(const ray& r, hitable* world);
-vec3 random_in_unit_sphere();
-float getRundomFloat();
+vec3 GetRayProducedColor(const ray& r, hitable* world, int depth);
 
-vec3 GetRayProducedColor(const ray& r, hitable* world)
+vec3 GetRayProducedColor(const ray& r, hitable* world, int depth)
 {
 	hit_record rec;
 
 	if (world->hit(r, 0.001f, FLT_MAX, rec))
 	{
-		vec3 target = rec.p + rec.normal + random_in_unit_sphere();
-		return 0.5f*GetRayProducedColor(ray(rec.p, target-rec.p), world);
+		ray scattered;
+		vec3 attenuation;
+
+		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+		{
+			return attenuation * GetRayProducedColor(scattered, world, depth + 1);
+		}
+		else
+		{
+			return vec3(0, 0, 0);
+		}
 	}
 	else
 	{
@@ -33,23 +40,6 @@ vec3 GetRayProducedColor(const ray& r, hitable* world)
 		float t = 0.5f*(unit_direction.y() + 1.0f);
 		return (1.0f - t)*vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
 	}
-}
-
-vec3 random_in_unit_sphere()
-{
-	vec3 p;
-	do
-	{
-		p = 2.0*vec3(getRundomFloat(),getRundomFloat(),getRundomFloat()) - vec3(1,1,1);
-	} 
-	while (p.squared_length() >= 1.f);
-
-	return p;
-}
-
-float getRundomFloat()
-{
-	return (((double)rand() / (RAND_MAX)));
 }
 
 int main()
@@ -63,10 +53,12 @@ int main()
 	vec3 vertical(0.0f, 2.0f, 0.0f);
 	vec3 origin(0.0f, 0.0f, 0.0f);
 
-	hitable *list[2];
-	list[0] = new sphere(vec3(0.f, 0.f, -1.f), 0.5);
-	list[1] = new sphere(vec3(0.f, -100.5f, -1.f), 100);
-	hitable *world = new hitable_list(list, 2);
+	hitable *list[4];
+	list[0] = new sphere(vec3(0.f, 0.f, -1.f), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
+	list[1] = new sphere(vec3(0.f, -100.5f, -1.f), 100, new lambertian(vec3(0.8, 0.8, 0.3)));
+	list[2] = new sphere(vec3(1.f,  0.f, -1.f), 0.5f, new metal(vec3(0.8, 0.8, 0.3)));
+	list[3] = new sphere(vec3(-1.f, 0.f, -1.f), 0.5f, new metal(vec3(0.8, 0.8, 0.3)));
+	hitable *world = new hitable_list(list, 4);
 
 	camera cam;
 
@@ -84,7 +76,7 @@ int main()
 				float v = float(j + getRundomFloat()) / float(HEIGHT);
 				ray r = cam.get_ray(u, v);
 				vec3 p = r.point_at_parameter(2.f);
-				color += GetRayProducedColor(r, world);
+				color += GetRayProducedColor(r, world, 0);
 			}
 
 			color /= float(HEIGHT);

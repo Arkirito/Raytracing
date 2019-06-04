@@ -119,8 +119,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Headers\camera.h" />
+    <ClInclude Include="Headers\common.h" />
     <ClInclude Include="Headers\hitable.h" />
     <ClInclude Include="Headers\hitable_list.h" />
+    <ClInclude Include="Headers\material.h" />
     <ClInclude Include="Headers\ray.h" />
     <ClInclude Include="Headers\sphere.h" />
     <ClInclude Include="Headers\vec3.h" />
