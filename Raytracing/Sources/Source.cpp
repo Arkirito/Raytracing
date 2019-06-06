@@ -11,8 +11,8 @@
 
 #include <common.h>
 
-#define WIDTH 200
-#define HEIGHT 100
+#define WIDTH 100
+#define HEIGHT 50
 
 vec3 GetRayProducedColor(const ray& r, hitable* world, int depth);
 
@@ -42,6 +42,41 @@ vec3 GetRayProducedColor(const ray& r, hitable* world, int depth)
 	}
 }
 
+hitable* random_scene()
+{
+	int n = 500;
+	hitable** list = new hitable*[n + 1];
+	list[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(vec3(0.5f, 0.5f, 0.5f)));
+	int i = 1;
+	for(int a = -11; a < 11; a++)
+		for (int b = -11; b < 11; b++)
+		{
+			float choose_mat = getRundomFloat();
+			vec3 center(a + 0.9*getRundomFloat(), 0.2f, b + 0.9f*getRundomFloat());
+			if ((center - vec3(4, 0.2, 0)).length() > 0.9f)
+			{
+				if (choose_mat < 0.8f) // diffuse
+				{
+					list[i++] = new sphere(center, 0.2f, new lambertian(vec3(getRundomFloat()*getRundomFloat(), getRundomFloat()*getRundomFloat(), getRundomFloat()*getRundomFloat())));
+				}
+				else if (choose_mat < 0.95f) // metal
+				{
+					list[i++] = new sphere(center, 0.2f, new metal(vec3(0.5f*(1 + getRundomFloat()), 0.5f*(1 + getRundomFloat()), 0.5f*(1 + getRundomFloat())), 0.5f*getRundomFloat()));
+				}
+				else //glass
+				{
+					list[i++] = new sphere(center, 0.2f, new dielectric(1.5f));
+				}
+			}
+		}
+
+	list[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dielectric(1.5));
+	list[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new dielectric(1.5));
+	list[i++] = new sphere(vec3(4, 1, 0), 1.0f, new metal(vec3(0.588f, 0.737f, 0.462f), 0.0f));
+
+	return new hitable_list(list, i);
+}
+
 int main()
 {
 	std::ofstream output("output.ppm", std::ofstream::out);
@@ -53,19 +88,14 @@ int main()
 	vec3 vertical(0.0f, 2.0f, 0.0f);
 	vec3 origin(0.0f, 0.0f, 0.0f);
 
-	hitable *list[4];
-	list[0] = new sphere(vec3(0.f, 0.f, -1.f), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
-	list[1] = new sphere(vec3(0.f, -100.5f, -1.f), 100, new lambertian(vec3(0.8, 0.8, 0.3)));
-	list[2] = new sphere(vec3(1.f,  0.f, -1.f), 0.5f, new metal(vec3(0.8, 0.8, 0.3)));
-	list[3] = new sphere(vec3(-1.f, 0.f, -1.f), 0.5f, new dielectric(1.5f));
-	hitable *world = new hitable_list(list, 4);
+	hitable *world = random_scene();
 
 	vec3 lookfrom(3, 3, 2);
-	vec3 lookat(0, 0, -1);
+	vec3 lookat(10, 0, -1);
 	float dist_to_focus = (lookfrom - lookat).length();
 	float aperture = 2.0f;
 
-	camera cam(vec3(-1.f, 1.f, 1), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(WIDTH)/float(HEIGHT), aperture, dist_to_focus);
+	camera cam(vec3(-5.5f, 2.5f, 5.5f), vec3(0, 0, -1), vec3(0, 1, 0), 90, float(WIDTH)/float(HEIGHT), aperture, dist_to_focus);
 
 	srand(time(NULL));
 
